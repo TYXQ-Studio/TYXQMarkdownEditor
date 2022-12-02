@@ -14,10 +14,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        ui/mainwindow.cpp
-        ui/mainwindow.h
-        ui/mainwindow.ui
-)
+        ui/MainWindow.cpp
+        ui/MainWindow.h
+        )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(TYXQMarkdownEditorClient
