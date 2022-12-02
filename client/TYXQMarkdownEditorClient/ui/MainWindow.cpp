@@ -1,8 +1,10 @@
 #include "MainWindow.h"
 
+#include <QLabel>
+
 MainWindow::MainWindow(QWidget *parent)
         : QMainWindow(parent) {
-    ui->setupUi(this);
+
 }
 
 MainWindow::~MainWindow() {
