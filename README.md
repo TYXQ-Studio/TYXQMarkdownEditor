@@ -4,7 +4,7 @@
 
 **软件名称：**
 
-- TYXQMarkdownEditor
+TYXQMarkdownEditor
 
 **功能点描述：**
 
