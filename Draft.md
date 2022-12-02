@@ -24,3 +24,31 @@ gantt
     服务端                                             :after render, 6d
     section 功能类
 ```
+
+#### 1> 核心功能
+
+- 编辑器
+  - <font color="red">文件树</font> XB
+  - 多标签
+  - 左右/上下分屏
+
+- **<font color="red">Markdown编辑</font>**
+  - **<font color="red">实时预览</font>**
+
+  - 导出pdf
+
+#### 2> 拓展功能
+
+- <font color="red">图片、视频、音频预览</font>
+- 代码块增强
+  - python解释运行
+  - c/cpp编译运行
+  - java编译运行
+- 链接可视化 XB
+
+- 其他功能
+  - <font color="red">主题配色设置（深色浅色切换）</font>
+  - 局域网下演示功能（共享给多台设备观看）
+  - 局域网下协作功能（共享给多台设备协作）
+  - 账号登陆 - 设置同步
+- ......
