@@ -1,1 +1,1 @@
-# TYXEditor
+# TYXQMarkdownEditor
