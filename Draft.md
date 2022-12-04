@@ -52,3 +52,27 @@ gantt
   - 局域网下协作功能（共享给多台设备协作）
   - 账号登陆 - 设置同步
 - ......
+
+#### 3> 参考
+
+##### 项目参考
+
+- [cloose/CuteMarkEd: Qt Markdown Editor (github.com)](https://github.com/cloose/CuteMarkEd)
+
+##### 开源库
+
+- [wangwenx190/framelesshelper: Cross-platform window customization framework for Qt Widgets and Qt Quick. Supports Windows, Linux and macOS. (github.com)](https://github.com/wangwenx190/framelesshelper)
+
+##### 一些文章
+
+- 如何使用 C++ 库：[c++ - How to use Libraries - Stack Overflow](https://stackoverflow.com/questions/10358745/how-to-use-libraries)
+
+- [Qt官方示例-Markdown编辑器 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/88771103)
+- [Qt实现文本编辑器（一） - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/461346513)
+- [[QT小项目练习]TextEditor 一个简单的文本编辑器 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/35012666)
+- [QT实时保存的简单纯文本编辑器 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/579012389)
+- [(1 封私信 / 14 条消息) 用Qt如何实现一个能够列选取的文本编辑器？ - 知乎 (zhihu.com)](https://www.zhihu.com/question/57444362/answer/152994644)
+
+- [(1 封私信 / 14 条消息) 如何使用 QtWidget 写出好看的界面？ - 知乎 (zhihu.com)](https://www.zhihu.com/question/460991049/answer/1908111553)
+
+- [CMake 良心教程，教你从入门到入魂 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/500002865)

@@ -1,60 +1,49 @@
+# ------------------------------ Basic information ------------------------------
+
 cmake_minimum_required(VERSION 3.5)
 
-project(TYXQMarkdownEditorClient VERSION 0.1 LANGUAGES CXX)
+project(TYXQMarkdownEditorClient
+        VERSION 0.1
+        LANGUAGES CXX
+        )
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
+# CPP Version
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+# Set Directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
-set(PROJECT_SOURCES
-        main.cpp
-        ui/MainWindow.cpp
-        ui/MainWindow.h
-        )
-
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(TYXQMarkdownEditorClient
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET TYXQMarkdownEditorClient APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
-else()
-    if(ANDROID)
-        add_library(TYXQMarkdownEditorClient SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-    else()
-        add_executable(TYXQMarkdownEditorClient
-            ${PROJECT_SOURCES}
-        )
-    endif()
+if(NOT DEFINED PROJECT_SCRIPTS_DIR)
+    set(PROJECT_SCRIPTS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cmake) # Scripts
 endif()
 
-target_link_libraries(TYXQMarkdownEditorClient PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-set_target_properties(TYXQMarkdownEditorClient PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
-install(TARGETS TYXQMarkdownEditorClient
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(TYXQMarkdownEditorClient)
+if(NOT DEFINED PROJECT_ARCHIVE_DIR)
+    set(PROJECT_ARCHIVE_DIR ${PROJECT_BINARY_DIR}/etc) # Etc
 endif()
+
+if(NOT DEFINED PROJECT_DEPLOY_PATH)
+    set(PROJECT_DEPLOY_PATH ${CMAKE_CURRENT_SOURCE_DIR}/release) # Release
+endif()
+# ------------------------------ Sub Projects ------------------------------
+
+# Libraries
+add_subdirectory(FramelessHelper)
+
+# Application
+add_subdirectory(TYXQMarkdownEditorClient)
+
+# ------------------------------ Deploy Targets ------------------------------
+
+string(TOLOWER ${CMAKE_SYSTEM_PROCESSOR} ARCH_NAME)
+set(RELEASE_DIR_NAME tyxqmarkdowneditorclient-win-${ARCH_NAME}-${PROJECT_VERSION})
+
+add_custom_target(app_deploy
+        COMMAND ${CMAKE_COMMAND}
+        -D ETC_DIR="${PROJECT_ARCHIVE_DIR}"
+        -D RELEASE_DIR="${PROJECT_DEPLOY_PATH}/${RELEASE_DIR_NAME}"
+        -P "${PROJECT_SCRIPTS_DIR}/Deploy/WinDeploy.cmake"
+        DEPENDS lrelease_task base_lrelease_task QVogenClient RenderHost
+        )
