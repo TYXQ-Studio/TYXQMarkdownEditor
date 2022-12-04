@@ -82,3 +82,13 @@ add_custom_command(TARGET ${PROJECT_NAME}
         -P ${PROJECT_SCRIPTS_DIR}/Execute/Log.cmake
         )
 
+# ------------------------------ Promote code experience ------------------------------
+
+# Include directories
+add_current_files(INCLUDE_PATHS
+        ui
+        )
+
+foreach(Path ${INCLUDE_PATHS})
+    include_directories(${Path})
+endforeach()

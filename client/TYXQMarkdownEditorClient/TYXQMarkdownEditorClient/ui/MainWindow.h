@@ -2,6 +2,9 @@
 #define MAINWINDOW_H
 
 #include <FramelessMainWindow>
+#include <QFileSystemModel>
+#include <QTreeView>
+#include <QSplitter>
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
 class StandardTitleBar;
@@ -25,6 +28,22 @@ private:
 private:
     QScopedPointer<FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar)> m_titleBar;
 //    QScopedPointer<Ui::MainWindow> m_mainWindow;
+
+    QFileSystemModel *fileTreeModel;
+    QTreeView *fileTreeView;
+
+    QSplitter *splitter;
+
+    // Menu things
+    QMenu *fileMenu;
+    QAction *newAct;
+    QAction *openFileAct;
+    QAction *openDirAct;
+    QAction *saveAct;
+
+    // Handlers
+    void onOpenFile();
+    void onOpenDir();
 };
 
 
