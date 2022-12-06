@@ -1,4 +1,5 @@
-#include "ui/MainWindow.h"
+#include "window/MainWindow.h"
+//#include "window/Home.h"
 
 #include <FramelessWidgetsHelper>
 #include <QApplication>
@@ -10,13 +11,14 @@ FRAMELESSHELPER_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     std::cout << "??" << std::endl;
-    FramelessHelper::Widgets::initialize();
+//    FramelessHelper::Widgets::initialize();
     QApplication a(argc, argv);
 
     MainWindow w;
+//    Home w;
     w.show();
 
     const int exec = a.exec();
-    FramelessHelper::Widgets::uninitialize();
+//    FramelessHelper::Widgets::uninitialize();
     return exec;
 }

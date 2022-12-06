@@ -1,7 +1,6 @@
 #include "MainWindow.h"
 
 #include <StandardTitleBar>
-#include <StandardSystemButton>
 #include <FramelessWidgetsHelper>
 #include <QMenuBar>
 #include <QHBoxLayout>
@@ -9,6 +8,7 @@
 #include <QFileDialog>
 #include "../settings.h"
 #include <iostream>
+#include <QWebEngineView>
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -19,6 +19,10 @@ FRAMELESSHELPER_STRING_CONSTANT(State)
 MainWindow::MainWindow(QWidget *parent, const Qt::WindowFlags flags) : FramelessMainWindow(parent, flags)
 {
     initialize();
+//    QWebEngineView *view = new QWebEngineView(this);
+//    view->setUrl(QUrl("https://www.baidu.com/"));
+//    view->show();
+//    setCentralWidget(view);
 }
 
 MainWindow::~MainWindow() = default;
@@ -120,7 +124,8 @@ QMenuBar::item:pressed {
 void MainWindow::onOpenFile() {
     QString filepath = QFileDialog::getOpenFileName(this, " Open file ", "./", ".md");
     if (filepath == nullptr) return;
-    // TODO: 这里写打开文件相关处理
+    curFile = filepath;
+    onLoadFile();
 }
 
 void MainWindow::onOpenDir() {
@@ -131,3 +136,8 @@ void MainWindow::onOpenDir() {
     fileTreeModel->setRootPath(dir);
     fileTreeView->setRootIndex(fileTreeModel->index(dir));
 }
+
+void MainWindow::onLoadFile() {
+    // TODO: 这里写读取文件相关处理
+}
+
