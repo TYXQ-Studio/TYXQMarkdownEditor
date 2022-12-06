@@ -28,6 +28,8 @@ set(markdowneditor_resource_files
         "res/3rdparty/markdown.css"
         "res/3rdparty/marked.js"
         "res/3rdparty/markdown-it.min.js"
+        "res/3rdparty/default.min.css"
+        "res/3rdparty/highlight.min.js"
 #        "res/default.md"
         "res/index.html"
         )
