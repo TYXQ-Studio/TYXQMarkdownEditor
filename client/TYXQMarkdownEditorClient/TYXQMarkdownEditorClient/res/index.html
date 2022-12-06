@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="3rdparty/markdown.css">
     <script src="3rdparty/marked.js"></script>
+    <script src="3rdparty/markdown-it.min.js"></script>
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
 </head>
 <body>
@@ -13,8 +14,11 @@
 
     var placeholder = document.getElementById('placeholder');
 
+    var md = window.markdownit();
+
     var updateText = function(text) {
-        placeholder.innerHTML = marked(text);
+        // placeholder.innerHTML = marked(text);
+        placeholder.innerHTML = md.render(text);
     }
 
     new QWebChannel(qt.webChannelTransport,

@@ -27,6 +27,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE FramelessHelper::Widgets)
 set(markdowneditor_resource_files
         "res/3rdparty/markdown.css"
         "res/3rdparty/marked.js"
+        "res/3rdparty/markdown-it.min.js"
 #        "res/default.md"
         "res/index.html"
         )
