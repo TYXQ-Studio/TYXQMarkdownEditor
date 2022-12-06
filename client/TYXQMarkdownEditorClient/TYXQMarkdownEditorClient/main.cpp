@@ -11,7 +11,7 @@ FRAMELESSHELPER_USE_NAMESPACE
 int main(int argc, char *argv[])
 {
     std::cout << "??" << std::endl;
-//    FramelessHelper::Widgets::initialize();
+    FramelessHelper::Widgets::initialize();
     QApplication a(argc, argv);
 
     MainWindow w;
@@ -19,6 +19,6 @@ int main(int argc, char *argv[])
     w.show();
 
     const int exec = a.exec();
-//    FramelessHelper::Widgets::uninitialize();
+    FramelessHelper::Widgets::uninitialize();
     return exec;
 }
