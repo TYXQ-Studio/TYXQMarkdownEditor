@@ -29,6 +29,9 @@ private:
     QScopedPointer<FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar)> m_titleBar;
 //    QScopedPointer<Ui::MainWindow> m_mainWindow;
 
+    QString curFile;
+    QString curDir;
+
     QFileSystemModel *fileTreeModel;
     QTreeView *fileTreeView;
 
@@ -44,6 +47,7 @@ private:
     // Handlers
     void onOpenFile();
     void onOpenDir();
+    void onLoadFile();
 };
 
 

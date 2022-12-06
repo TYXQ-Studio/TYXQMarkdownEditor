@@ -84,7 +84,9 @@ gantt
   - 账号登陆 - 设置同步
 - ......
 
-#### 3> 参考
+#### 3> 参考即注意事项
+
+需要使用 msvc 编译（因为Windows下 WebEngine 模块在 msvc 里才有）
 
 ##### 项目参考
 
@@ -107,3 +109,4 @@ gantt
 - [(1 封私信 / 14 条消息) 如何使用 QtWidget 写出好看的界面？ - 知乎 (zhihu.com)](https://www.zhihu.com/question/460991049/answer/1908111553)
 
 - [CMake 良心教程，教你从入门到入魂 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/500002865)
+
