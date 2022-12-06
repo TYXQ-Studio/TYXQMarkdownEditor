@@ -5,6 +5,9 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QSplitter>
+#include "document.h"
+#include <QPlainTextEdit>
+#include <QWebEngineView>
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
 class StandardTitleBar;
@@ -16,8 +19,10 @@ Q_OBJECT
     Q_DISABLE_COPY_MOVE(MainWindow)
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr, const Qt::WindowFlags flags = {});
+    explicit MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = {});
     ~MainWindow() override;
+
+    void openFile(const QString &path);
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -26,11 +31,18 @@ private:
     void initialize();
 
 private:
+    bool isModified() const;
+
     QScopedPointer<FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar)> m_titleBar;
 //    QScopedPointer<Ui::MainWindow> m_mainWindow;
 
     QString curFile;
     QString curDir;
+
+    QPlainTextEdit *editor;
+    QWebEngineView *preview;
+    QString m_filePath;
+    Document m_content;
 
     QFileSystemModel *fileTreeModel;
     QTreeView *fileTreeView;
@@ -38,16 +50,30 @@ private:
     QSplitter *splitter;
 
     // Menu things
+    QMenuBar *m_menuBar;
     QMenu *fileMenu;
-    QAction *newAct;
-    QAction *openFileAct;
+    QAction *actionNew;
+    QAction *actionOpen;
     QAction *openDirAct;
-    QAction *saveAct;
+    QAction *actionSave;
+    QAction *actionSaveAs;
 
     // Handlers
-    void onOpenFile();
-    void onOpenDir();
+    void onFileNew();
+    void onFileOpen();
+    void onFileSave();
+//    void onOpenDir();
     void onLoadFile();
+
+    void initTitleBar();
+
+    void initMenu();
+
+    void initFramelessWindow();
+
+    void onFileSaveAs();
+
+    void initView();
 };
 
 
