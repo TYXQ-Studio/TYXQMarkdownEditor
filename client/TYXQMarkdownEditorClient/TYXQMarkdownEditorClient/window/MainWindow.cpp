@@ -239,8 +239,10 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     if (isModified()) {
         QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(),
                                                                    tr("You have unsaved changes. Do you want to exit anyway?"));
-        if (button != QMessageBox::Yes)
+        if (button != QMessageBox::Yes) {
             e->ignore();
+            return;
+        }
     }
     Settings::set({}, kGeometry, saveGeometry());
     Settings::set({}, kState, saveState());
