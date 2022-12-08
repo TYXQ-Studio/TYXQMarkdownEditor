@@ -1,7 +1,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PROJECT_SOURCES
-        window/document.cpp
-        window/document.h
+        window/Document.cpp
+        window/Document.h
         main.cpp
         settings.h
         settings.cpp
@@ -11,8 +11,8 @@ set(PROJECT_SOURCES
 #        window/Home.cpp
         window/MainWindow.h
         window/MainWindow.cpp
-        window/previewpage.h
-        window/previewpage.cpp
+        window/PreviewPage.h
+        window/PreviewPage.cpp
         )
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui WebChannel Widgets WebEngineWidgets Core5Compat)

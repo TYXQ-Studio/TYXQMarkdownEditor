@@ -5,7 +5,7 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QSplitter>
-#include "document.h"
+#include "Document.h"
 #include <QPlainTextEdit>
 #include <QWebEngineView>
 

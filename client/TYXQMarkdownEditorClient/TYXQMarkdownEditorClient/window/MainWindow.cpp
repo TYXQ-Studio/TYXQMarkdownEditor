@@ -10,7 +10,7 @@
 #include <iostream>
 #include <QWebEngineView>
 #include <QPlainTextEdit>
-#include "previewpage.h"
+#include "PreviewPage.h"
 #include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
@@ -74,9 +74,10 @@ QMenuBar::item:pressed {
     actionOpen->setStatusTip(tr("Open a file"));
     fileMenu->addAction(actionOpen);
     // File -> Open Directory
-    openDirAct = new QAction(tr("&Open Directory"), this);
-    openDirAct->setStatusTip(tr("Open a directory"));
-    fileMenu->addAction(openDirAct);
+    // TODO: Open Directory
+//    openDirAct = new QAction(tr("&Open Directory"), this);
+//    openDirAct->setStatusTip(tr("Open a directory"));
+//    fileMenu->addAction(openDirAct);
     // File -> Save
     actionSave = new QAction(tr("&Save"), this);
     actionSave->setShortcuts(QKeySequence::Save);
