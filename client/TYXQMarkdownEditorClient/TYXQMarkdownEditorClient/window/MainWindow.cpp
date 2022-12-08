@@ -14,6 +14,7 @@
 #include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
+#include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -122,14 +123,14 @@ void MainWindow::initView() {
     splitter = new QSplitter(this);
     setCentralWidget(splitter);
 
-    editor = new QPlainTextEdit();
+    editor = new QMarkdownTextEdit();
     preview = new QWebEngineView();
     PreviewPage *page = new PreviewPage();
     preview->setPage(page);
     splitter->addWidget(editor);
     splitter->addWidget(preview);
 
-    connect(editor, &QPlainTextEdit::textChanged,
+    connect(editor, &QMarkdownTextEdit::textChanged,
             [=]() { m_content.setText(editor->toPlainText()); });
 
     QWebChannel *channel = new QWebChannel(this);
