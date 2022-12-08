@@ -276,7 +276,6 @@ void MainWindow::openFile(const QString &path) {
     statusBar()->showMessage(tr("Opened %1").arg(QDir::toNativeSeparators(path)));
 }
 
-bool MainWindow::isModified() const
-{
+bool MainWindow::isModified() const {
     return editor->document()->isModified();
 }
