@@ -95,6 +95,7 @@ gantt
 ##### 开源库
 
 - [wangwenx190/framelesshelper: Cross-platform window customization framework for Qt Widgets and Qt Quick. Supports Windows, Linux and macOS. (github.com)](https://github.com/wangwenx190/framelesshelper)
+- [pbek/qmarkdowntextedit: A C++ Qt QPlainTextEdit widget with markdown highlighting support and a lot of other extras (github.com)](https://github.com/pbek/qmarkdowntextedit)
 
 ##### 一些文章
 

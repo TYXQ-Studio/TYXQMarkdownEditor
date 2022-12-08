@@ -22,7 +22,7 @@ qt_standard_project_setup()
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::WebEngineWidgets Qt6::WebChannel Qt6::Core5Compat)
-target_link_libraries(${PROJECT_NAME} PRIVATE FramelessHelper::Widgets)
+target_link_libraries(${PROJECT_NAME} PRIVATE FramelessHelper::Widgets qmarkdowntextedit)
 
 set(markdowneditor_resource_files
         "res/3rdparty/markdown.css"
