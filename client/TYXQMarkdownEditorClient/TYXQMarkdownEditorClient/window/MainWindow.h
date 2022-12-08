@@ -5,9 +5,10 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QSplitter>
-#include "document.h"
+#include "Document.h"
 #include <QPlainTextEdit>
 #include <QWebEngineView>
+#include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
 class StandardTitleBar;
@@ -39,7 +40,7 @@ private:
     QString curFile;
     QString curDir;
 
-    QPlainTextEdit *editor;
+    QMarkdownTextEdit *editor;
     QWebEngineView *preview;
     QString m_filePath;
     Document m_content;

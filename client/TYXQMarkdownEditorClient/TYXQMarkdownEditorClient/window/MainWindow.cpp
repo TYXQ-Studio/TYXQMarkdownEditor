@@ -10,10 +10,11 @@
 #include <iostream>
 #include <QWebEngineView>
 #include <QPlainTextEdit>
-#include "previewpage.h"
+#include "PreviewPage.h"
 #include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
+#include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -74,9 +75,10 @@ QMenuBar::item:pressed {
     actionOpen->setStatusTip(tr("Open a file"));
     fileMenu->addAction(actionOpen);
     // File -> Open Directory
-    openDirAct = new QAction(tr("&Open Directory"), this);
-    openDirAct->setStatusTip(tr("Open a directory"));
-    fileMenu->addAction(openDirAct);
+    // TODO: Open Directory
+//    openDirAct = new QAction(tr("&Open Directory"), this);
+//    openDirAct->setStatusTip(tr("Open a directory"));
+//    fileMenu->addAction(openDirAct);
     // File -> Save
     actionSave = new QAction(tr("&Save"), this);
     actionSave->setShortcuts(QKeySequence::Save);
@@ -121,14 +123,14 @@ void MainWindow::initView() {
     splitter = new QSplitter(this);
     setCentralWidget(splitter);
 
-    editor = new QPlainTextEdit();
+    editor = new QMarkdownTextEdit();
     preview = new QWebEngineView();
     PreviewPage *page = new PreviewPage();
     preview->setPage(page);
     splitter->addWidget(editor);
     splitter->addWidget(preview);
 
-    connect(editor, &QPlainTextEdit::textChanged,
+    connect(editor, &QMarkdownTextEdit::textChanged,
             [=]() { m_content.setText(editor->toPlainText()); });
 
     QWebChannel *channel = new QWebChannel(this);
@@ -237,8 +239,10 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     if (isModified()) {
         QMessageBox::StandardButton button = QMessageBox::question(this, windowTitle(),
                                                                    tr("You have unsaved changes. Do you want to exit anyway?"));
-        if (button != QMessageBox::Yes)
+        if (button != QMessageBox::Yes) {
             e->ignore();
+            return;
+        }
     }
     Settings::set({}, kGeometry, saveGeometry());
     Settings::set({}, kState, saveState());

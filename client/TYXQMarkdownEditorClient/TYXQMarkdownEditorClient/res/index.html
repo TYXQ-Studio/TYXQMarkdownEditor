@@ -2,8 +2,11 @@
 <html lang="en">
 <meta charset="utf-8">
 <head>
-    <link rel="stylesheet" type="text/css" href="3rdparty/markdown.css">
+<!--    <link rel="stylesheet" type="text/css" href="3rdparty/markdown.css">-->
+    <link rel="stylesheet" type="text/css" href="3rdparty/default.min.css">
     <script src="3rdparty/marked.js"></script>
+    <script src="3rdparty/markdown-it.min.js"></script>
+    <script src="3rdparty/highlight.min.js"></script>
     <script src="qrc:/qtwebchannel/qwebchannel.js"></script>
 </head>
 <body>
@@ -13,8 +16,22 @@
 
     var placeholder = document.getElementById('placeholder');
 
+    var md = window.markdownit({
+        html: true,
+        highlight: function (str, lang) {
+            if (lang && hljs.getLanguage(lang)) {
+                try {
+                    return hljs.highlight(str, { language: lang }).value;
+                } catch (__) {}
+            }
+
+            return ''; // use external default escaping
+        }
+    });
+
     var updateText = function(text) {
-        placeholder.innerHTML = marked(text);
+        // placeholder.innerHTML = marked(text);
+        placeholder.innerHTML = md.render(text);
     }
 
     new QWebChannel(qt.webChannelTransport,

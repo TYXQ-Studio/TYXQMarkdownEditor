@@ -13,6 +13,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 add_subdirectory(FramelessHelper)
+add_subdirectory(qmarkdowntextedit)
 add_subdirectory(TYXQMarkdownEditorClient)
 
 # Set Directories
