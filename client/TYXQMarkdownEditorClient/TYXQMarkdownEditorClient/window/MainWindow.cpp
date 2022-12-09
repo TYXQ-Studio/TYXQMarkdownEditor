@@ -8,10 +8,10 @@
 #include <QFileDialog>
 #include "../settings.h"
 #include <iostream>
-#include <QWebEngineView>
+//#include <QWebEngineView>
 #include <QPlainTextEdit>
-#include "PreviewPage.h"
-#include <QWebChannel>
+//#include "PreviewPage.h"
+//#include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QTextBrowser>

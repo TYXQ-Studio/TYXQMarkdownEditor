@@ -7,7 +7,7 @@
 #include <QSplitter>
 #include "MarkdownDocument.h"
 #include <QPlainTextEdit>
-#include <QWebEngineView>
+//#include <QWebEngineView>
 #include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 

@@ -11,17 +11,17 @@ set(PROJECT_SOURCES
 #        window/Home.cpp
         window/MainWindow.h
         window/MainWindow.cpp
-        window/PreviewPage.h
-        window/PreviewPage.cpp
-        utils/MarkdownUtils.cpp utils/MarkdownUtils.h utils/mdtransform.hpp)
+#        window/PreviewPage.h
+#        window/PreviewPage.cpp
+        utils/mdtransform.hpp)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui WebChannel Widgets WebEngineWidgets Core5Compat)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui WebChannel Widgets WebEngineWidgets Core5Compat)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets #[[WebChannel WebEngineWidgets]])
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets #[[WebChannel WebEngineWidgets]])
 qt_standard_project_setup()
 
 qt_add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::WebEngineWidgets Qt6::WebChannel Qt6::Core5Compat)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets #[[Qt6::WebEngineWidgets Qt6::WebChannel]])
 target_link_libraries(${PROJECT_NAME} PRIVATE FramelessHelper::Widgets qmarkdowntextedit)
 
 set(markdowneditor_resource_files
