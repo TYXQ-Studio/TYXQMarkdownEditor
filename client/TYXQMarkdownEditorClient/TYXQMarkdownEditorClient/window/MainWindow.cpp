@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
+#include "../utils/mdtransform.hpp"
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -119,23 +120,34 @@ void MainWindow::initFramelessWindow() {
     setWindowIcon(QFileIconProvider().icon(QFileIconProvider::Computer));
 }
 
+std::string head = "<!DOCTYPE html><html><head>\
+  6         <meta charset=\"utf-8\">\
+  5         <title>Markdown</title>\
+  4         <link rel=\"stylesheet\" href=\"github-markdown.css\">\
+  3         </head><body><article class=\"markdown-body\">";
+2     std::string end = "</article></body></html>";
+
 void MainWindow::initView() {
     splitter = new QSplitter(this);
     setCentralWidget(splitter);
 
     editor = new QMarkdownTextEdit();
     preview = new QWebEngineView();
-    PreviewPage *page = new PreviewPage();
-    preview->setPage(page);
+//    PreviewPage *page = new PreviewPage();
+//    preview->setPage(page);
     splitter->addWidget(editor);
-    splitter->addWidget(preview);
+    QTextEdit *te = new QTextEdit();
+    splitter->addWidget(te);
+//    splitter->addWidget(preview);
 
-    connect(editor, &QMarkdownTextEdit::textChanged,
-            [=]() { m_content.setText(editor->toPlainText()); });
+    connect(editor, &QMarkdownTextEdit::textChanged,this, [=]() {
+        m_content.setText(editor->toPlainText());
+        te->setHtml()
+    });
 
     QWebChannel *channel = new QWebChannel(this);
     channel->registerObject(QStringLiteral("content"), &m_content);
-    page->setWebChannel(channel);
+//    page->setWebChannel(channel);
 
     preview->setUrl(QUrl("qrc:/index.html"));
 
@@ -247,19 +259,6 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     Settings::set({}, kGeometry, saveGeometry());
     Settings::set({}, kState, saveState());
     FramelessMainWindow::closeEvent(e);
-}
-
-//void MainWindow::onOpenDir() {
-//    QString dir = QFileDialog::getExistingDirectory(this, " Open directory ", "./",
-//                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-//    if (dir == nullptr) return;
-////    std::cout << dir.toStdString() << std::endl;
-//    fileTreeModel->setRootPath(dir);
-//    fileTreeView->setRootIndex(fileTreeModel->index(dir));
-//}
-
-void MainWindow::onLoadFile() {
-    // TODO: 这里写读取文件相关处理
 }
 
 

@@ -1,7 +1,7 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PROJECT_SOURCES
-        window/Document.cpp
-        window/Document.h
+        window/MarkdownDocument.cpp
+        window/MarkdownDocument.h
         main.cpp
         settings.h
         settings.cpp
@@ -13,7 +13,7 @@ set(PROJECT_SOURCES
         window/MainWindow.cpp
         window/PreviewPage.h
         window/PreviewPage.cpp
-        )
+        utils/MarkdownUtils.cpp utils/MarkdownUtils.h utils/mdtransform.hpp)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui WebChannel Widgets WebEngineWidgets Core5Compat)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui WebChannel Widgets WebEngineWidgets Core5Compat)
