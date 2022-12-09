@@ -8,6 +8,7 @@
 #include "MarkdownDocument.h"
 #include <QPlainTextEdit>
 #include <QWebEngineView>
+#include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
@@ -41,7 +42,7 @@ private:
 //    QString curDir;
 
     QMarkdownTextEdit *editor;
-    QWebEngineView *preview;
+    QTextBrowser *preview;
     QString m_filePath;
     MarkdownDocument m_content;
 

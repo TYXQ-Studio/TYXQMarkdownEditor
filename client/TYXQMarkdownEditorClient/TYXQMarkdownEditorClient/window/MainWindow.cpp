@@ -135,13 +135,10 @@ void MainWindow::initView() {
     setCentralWidget(splitter);
 
     editor = new QMarkdownTextEdit();
-    preview = new QWebEngineView();
-//    PreviewPage *page = new PreviewPage();
-//    preview->setPage(page);
     splitter->addWidget(editor);
-    QTextBrowser  *te = new QTextBrowser();
-    splitter->addWidget(te);
-//    splitter->addWidget(preview);
+    preview = new QTextBrowser();
+    preview->setOpenExternalLinks(true);
+    splitter->addWidget(preview);
 
     connect(editor, &QMarkdownTextEdit::textChanged,this, [=]() {
         m_content.setText(editor->toPlainText());
@@ -149,14 +146,14 @@ void MainWindow::initView() {
         auto transform = MarkdownTransform::fromStr(editor->toPlainText());
         qDebug() << "TOC:" << transform.getTableOfContents();
         qDebug() << "Contents:" << transform.getContents();
-        te->setHtml(headHtml + transform.getTableOfContents() + transform.getContents() + endHtml);
+        preview->setHtml(headHtml + transform.getTableOfContents() + transform.getContents() + endHtml);
     });
 
-    QWebChannel *channel = new QWebChannel(this);
-    channel->registerObject(QStringLiteral("content"), &m_content);
+//    QWebChannel *channel = new QWebChannel(this);
+//    channel->registerObject(QStringLiteral("content"), &m_content);
 //    page->setWebChannel(channel);
 
-    preview->setUrl(QUrl("qrc:/index.html"));
+//    preview->setUrl(QUrl("qrc:/index.html"));
 
     connect(actionNew, &QAction::triggered, this, &MainWindow::onFileNew);
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
