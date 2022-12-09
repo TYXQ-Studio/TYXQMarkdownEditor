@@ -120,12 +120,14 @@ void MainWindow::initFramelessWindow() {
     setWindowIcon(QFileIconProvider().icon(QFileIconProvider::Computer));
 }
 
-std::string head = "<!DOCTYPE html><html><head>\
-  6         <meta charset=\"utf-8\">\
-  5         <title>Markdown</title>\
-  4         <link rel=\"stylesheet\" href=\"github-markdown.css\">\
-  3         </head><body><article class=\"markdown-body\">";
-2     std::string end = "</article></body></html>";
+QString headHtml = "<!DOCTYPE html><html><head>"
+        "<meta charset=\"utf-8\">"
+        "<title>Markdown</title>"
+        "<link rel=\"stylesheet\" href=\"github-markdown.css\">"
+        "</head><body><article class=\"markdown-body\">";
+
+QString endHtml = "</article></body></html>";
+
 
 void MainWindow::initView() {
     splitter = new QSplitter(this);
@@ -137,12 +139,17 @@ void MainWindow::initView() {
 //    preview->setPage(page);
     splitter->addWidget(editor);
     QTextEdit *te = new QTextEdit();
+    te->setReadOnly(true);
     splitter->addWidget(te);
 //    splitter->addWidget(preview);
 
     connect(editor, &QMarkdownTextEdit::textChanged,this, [=]() {
         m_content.setText(editor->toPlainText());
-        te->setHtml()
+        qDebug() << "Editor:" << editor->toPlainText();
+        auto transform = MarkdownTransform::fromStr(editor->toPlainText());
+        qDebug() << "TOC:" << transform.getTableOfContents();
+        qDebug() << "Contents:" << transform.getContents();
+        te->setHtml(headHtml + transform.getTableOfContents() + transform.getContents() + endHtml);
     });
 
     QWebChannel *channel = new QWebChannel(this);

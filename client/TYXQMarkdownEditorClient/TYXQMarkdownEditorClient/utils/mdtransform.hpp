@@ -11,7 +11,7 @@
 #include <cstdio>
 using namespace std;
 
-#define maxLength 10000
+#define MAX_LEN 10000
 
 // 词法关键字枚举
 enum{
@@ -37,7 +37,7 @@ enum{
     code            = 19
 };
 // HTML 前置标签
-const string frontTag[] = {
+const QString frontTag[] = {
     "","<p>","","<ul>","<ol>","<li>","<em>","<strong>",
     "<hr color=#CCCCCC size=1 />","<br />",
     "","<blockquote>",
@@ -45,7 +45,7 @@ const string frontTag[] = {
     "<pre><code>","<code>"
 };
 // HTML 后置标签
-const string backTag[] = {
+const QString backTag[] = {
     "","</p>","","</ul>","</ol>","</li>","</em>","</strong>",
     "","","","</blockquote>",
     "</h1>","</h2>","</h3>","</h4>","</h5>","</h6>",
@@ -53,15 +53,15 @@ const string backTag[] = {
 };
 typedef struct Cnode {
     vector <Cnode *> ch;
-    string heading;
-    string tag;
-    Cnode (const string &hd): heading(hd) {}
+    QString heading;
+    QString tag;
+    Cnode (const QString &hd): heading(hd) {}
 } Cnode;
 
 typedef struct node {
     int type;                           // 节点代表的类型
     vector <node *> ch;
-    string elem[3];                     // 用来存放三个重要的属性, elem[0] 保存了要显示的内容
+    QString elem[3];                     // 用来存放三个重要的属性, elem[0] 保存了要显示的内容
                                         // elem[1] 保存了链接, elem[2] 则保存了 title
     node (int _type): type(_type) {}
 } node;
@@ -70,9 +70,10 @@ class MarkdownTransform{
 private:
     node  *root, *now;
     Cnode *Croot;
-    string content, TOC;
+    QString content, TOC;
     int cntTag = 0;
-    char s[maxLength];
+//    char s[MAX_LEN];
+    QString line;
 
     // 判断是否为标题
     inline bool isHeading(node *v) {
@@ -95,35 +96,35 @@ private:
         delete v;
     }
 
-    void Cdfs(Cnode *v, string index) {
+    void Cdfs(Cnode *v, QString index) {
         TOC += "<li>\n";
         TOC += "<a href=\"#" + v->tag + "\">" + index + " " + v->heading + "</a>\n";
         int n = (int)v->ch.size();
         if (n) {
             TOC += "<ul>\n";
             for (int i = 0; i < n; i++) {
-                Cdfs(v->ch[i], index + to_string(i + 1) + ".");
+                Cdfs(v->ch[i], index + QString::number(i + 1) + ".");
             }
             TOC += "</ul>\n";
         }
         TOC += "</li>\n";
     }
 
-    void Cins(Cnode *v, int x, const string &hd, int tag) {
+    void Cins(Cnode *v, int x, const QString &hd, int tag) {
         int n = (int)v->ch.size();
         if (x == 1) {
             v->ch.push_back(new Cnode(hd));
-            v->ch.back()->tag = "tag" + to_string(tag);
+            v->ch.back()->tag = "tag" + QString::number(tag);
             return ;
         }
 
-        if (!n || v->ch.back()->heading.empty())
+        if (!n || v->ch.back()->heading.isEmpty())
             v->ch.push_back(new Cnode(""));
         Cins(v->ch.back(), x - 1, hd, tag);
     }
 
     void dfs(node *v) {
-        if (v->type == paragraph && v->elem[0].empty() && v->ch.empty())
+        if (v->type == paragraph && v->elem[0].isEmpty() && v->ch.empty())
             return ;
 
         content += frontTag[v->type];
@@ -162,16 +163,14 @@ private:
     }
 
     // 判断是否换行
-    inline bool isCutline(char *src) {
+    inline bool isCutline(const QString &line) {
         int cnt = 0;
-        char *ptr = src;
-        while (*ptr) {
+        for (auto c: line) {
             // 如果不是 空格、tab、- 或 *，那么则不需要换行
-            if (*ptr != ' ' && *ptr != '\t' && *ptr != '-')
+            if (c != ' ' && c != '\t' && c != '-')
                 return false;
-            if (*ptr == '-')
+            if (c == '-')
                 cnt++;
-            ptr++;
         }
         // 如果出现 --- 则需要增加一个分割线, 这时需要换行
         return (cnt >= 3);
@@ -196,60 +195,61 @@ private:
     // 开始解析一行中开始的空格和 Tab
     // src: 源串
     // 返回值: 由空格数和有内容处的 char* 指针组成的 std::pair
-    inline pair<int, char *> start(char *src) {
+    inline pair<int, QString> start(const QString &line) {
         // 如果该行内容为空，则直接返回
-        if ((int)strlen(src) == 0)
-            return make_pair(0, nullptr);
+        if (line.isEmpty())
+            return make_pair(0, QString());
         // 统计空格键和 Tab 键的个数
         int cntspace = 0, cnttab = 0;
         // 从该行的第一个字符读其, 统计空格键和 Tab 键,
         // 当遇到不是空格和 Tab 时，立即停止
-        for (int i = 0; src[i] != '\0'; i++) {
-            if (src[i] == ' ') cntspace++;
-            else if (src[i] == '\t') cnttab++;
+        for (int i = 0; i < line.size(); i++) {
+            if (line[i] == ' ') cntspace++;
+            else if (line[i] == '\t') cnttab++;
             // 如果内容前有空格和 Tab，那么将其统一按 Tab 的个数处理,
             // 其中, 一个 Tab = 四个空格
-            return make_pair(cnttab + cntspace / 4, src + i);
+            return make_pair(cnttab + cntspace / 4, line.right(line.size() - i + 1));
         }
-        return make_pair(0, nullptr);
+        return make_pair(0, QString());
     }
 
     // 判断当前行的类型
     // src: 源串
     // 返回值: 当前行的类型和除去行标志性关键字的正是内容的 char* 指针组成的 std::pair
-    inline pair<int, char *> JudgeType(char *src) {
-        char *ptr = src;
+    inline pair<int, QString> JudgeType(const QString &src) {
+//        char *ptr = src;
+        int i = 0;
 
         // 跳过 `#`
-        while (*ptr == '#') ptr++;
+        while (i < src.size() && src[i] == '#') i++;
 
         // 如果出现空格, 则说明是 `<h>` 标签
-        if (ptr - src > 0 && *ptr == ' ')
-            return make_pair(ptr - src + h1 - 1, ptr + 1);
+        if (i > 0 && i < src.size() && src[i] == ' ')
+            return make_pair(i + h1 - 1, src.right(src.size() - i));
 
         // 重置分析位置
-        ptr = src;
+        i = 0;
 
         // 如果出现 ``` 则说明是代码块
-        if (strncmp(ptr, "```", 3) == 0)
-            return make_pair(blockcode, ptr + 3);
+        if (src.startsWith("```"))
+            return make_pair(blockcode, src.right(src.size() - i - 2));
 
         // 如果出现 * + -, 并且他们的下一个字符为空格，则说明是列表
-        if (strncmp(ptr, "- ", 2) == 0)
-            return make_pair(ul, ptr + 1);
+        if (src.startsWith("- "))
+            return make_pair(ul, src.right(src.size() - 2));
 
         // 如果出现 > 且下一个字符为空格，则说明是引用
-        if (*ptr == '>' && (ptr[1] == ' '))
-            return make_pair(quote, ptr + 1);
+        if (src.startsWith("> "))
+            return make_pair(quote, src.right(src.size() - 2));
 
         // 如果出现的是数字, 且下一个字符是 . 则说明是是有序列表
-        char *ptr1 = ptr;
-        while (*ptr1 && (isdigit(*ptr1))) ptr1++;
-        if (ptr1 != ptr && *ptr1 == '.' && ptr1[1] == ' ')
-            return make_pair(ol, ptr1 + 1);
+        int j = i;
+        while (j < src.size() && src[j].isDigit()) j++;
+        if (j != i && j+1 < src.size() && src[j] == '.' && src[j+1] == ' ')
+            return make_pair(ol, src.right(src.size() - j));
 
         // 否则，就是普通段落
-        return make_pair(paragraph, ptr);
+        return make_pair(paragraph, src.right(src.size() - i + 1));
     }
 
     // 给定树的深度寻找节点
@@ -268,7 +268,7 @@ private:
     // 向指定的节点中插入要处理的串
     // v: 节点
     // src: 要处理的串
-    void insert(node *v, const string &src) {
+    void insert(node *v, const QString &src) {
         int n = (int)src.size();
         bool incode = false,
              inem = false,
@@ -277,10 +277,10 @@ private:
         v->ch.push_back(new node(nul));
 
         for (int i = 0; i < n; i++) {
-            char ch = src[i];
+            QChar ch = src[i];
             if (ch == '\\') {
                 ch = src[++i];
-                v->ch.back()->elem[0] += string(1, ch);
+                v->ch.back()->elem[0] += ch;
                 continue;
             }
 
@@ -309,14 +309,14 @@ private:
                && !incode && !instrong && !inem && !inautolink) {
                 v->ch.push_back(new node(image));
                 for (i += 2; i < n - 1 && src[i] != ']'; i++)
-                    v->ch.back()->elem[0] += string(1, src[i]);
+                    v->ch.back()->elem[0] += src[i];
                 i++;
                 for (i++; i < n - 1 && src[i] != ' ' && src[i] != ')'; i++)
-                    v->ch.back()->elem[1] += string(1, src[i]);
+                    v->ch.back()->elem[1] += src[i];
                 if (src[i] != ')')
                     for (i++; i < n - 1 && src[i] != ')'; i++)
                         if (src[i] != '"')
-                            v->ch.back()->elem[2] += string(1, src[i]);
+                            v->ch.back()->elem[2] += src[i];
                 v->ch.push_back(new node(nul));
                 continue;
             }
@@ -325,20 +325,20 @@ private:
             if (ch == '[' && !incode && !instrong && !inem && !inautolink) {
                 v->ch.push_back(new node(href));
                 for (i++; i < n - 1 && src[i] != ']'; i++)
-                    v->ch.back()->elem[0] += string(1, src[i]);
+                    v->ch.back()->elem[0] += src[i];
                 i++;
                 for (i++; i < n - 1 && src[i] != ' ' && src[i] != ')'; i++)
-                    v->ch.back()->elem[1] += string(1, src[i]);
+                    v->ch.back()->elem[1] += src[i];
                 if (src[i] != ')')
                     for (i++; i < n - 1 && src[i] != ')'; i++)
                         if (src[i] != '"')
-                            v->ch.back()->elem[2] += string(1, src[i]);
+                            v->ch.back()->elem[2] += src[i];
                 v->ch.push_back(new node(nul));
                 continue;
             }
 
-            v->ch.back()->elem[0] += string(1, ch);
-            if (inautolink) v->ch.back()->elem[1] += string(1, ch);
+            v->ch.back()->elem[0] += ch;
+            if (inautolink) v->ch.back()->elem[1] += ch;
         }
         if (src.size() >= 2)
             if (src.at(src.size() - 1) == ' ' && src.at(src.size() - 2) == ' ')
@@ -347,21 +347,32 @@ private:
 
 public:
     // 构造函数
-    MarkdownTransform(const std::string &filename) {
+    static MarkdownTransform fromFile(const QString &filename) {
+        QFile file(filename);
+        file.open(QFile::ReadOnly);
+        QTextStream textStream(&file);
+        return {textStream};
+    }
+    static MarkdownTransform fromStr(QString content) {
+        QTextStream textStream(&content);
+        return {textStream};
+    }
+
+    MarkdownTransform(QTextStream &textStream) {
         Croot = new Cnode("");
         root = new node(nul);
         now = root;
 
-        std::ifstream fin(filename);
+//        std::ifstream fin(filename);
 
         bool newpara = false;
         bool inblock = false;
-        while (!fin.eof()) {
+        while (textStream.readLineInto(&line)) {
             // 从文件中获取一行
-            fin.getline(s, maxLength);
+//            fin.getline(s, MAX_LEN);
 
             // 处理不在代码块且需要换行的情况
-            if (!inblock && isCutline(s)) {
+            if (!inblock && isCutline(line)) {
                 now = root;
                 now->ch.push_back(new node(hr));
                 newpara = false;
@@ -370,7 +381,7 @@ public:
 
             // std::pair 实质上是一个结构体, 可以将两个数据组合成一个数据
             // 计算一行中开始的空格和 Tab 数
-            std::pair<int, char *> ps = start(s);
+            std::pair<int, QString> ps = start(line);
 
             // 如果没有位于代码块中, 且没有统计到空格和 Tab, 则直接读取下一行
             if (!inblock && ps.second == nullptr) {
@@ -380,7 +391,7 @@ public:
             }
 
             // 分析该行文本的类型
-            std::pair<int, char *> tj = JudgeType(ps.second);
+            std::pair<int, QString> tj = JudgeType(ps.second);
 
             // 如果是代码块类型
             if (tj.first == blockcode) {
@@ -392,7 +403,7 @@ public:
 
             // 如果在代码块中, 直接将内容拼接到当前节点中
             if (inblock) {
-                now->ch.back()->elem[0] += string(s) + '\n';
+                now->ch.back()->elem[0] += line + '\n';
                 continue;
             }
 
@@ -419,7 +430,7 @@ public:
                     now = now->ch.back();
                 }
                 now->ch.push_back(new node(nul));
-                insert(now->ch.back(), string(tj.second));
+                insert(now->ch.back(), tj.second);
                 newpara = false;
                 continue;
             }
@@ -429,9 +440,9 @@ public:
             // 如果是标题行, 则向其标签中插入属性 tag
             if (tj.first >= h1 && tj.first <= h6) {
                 now->ch.push_back(new node(tj.first));
-                now->ch.back()->elem[0] = "tag" + to_string(++cntTag);
-                insert(now->ch.back(), string(tj.second));
-                Cins(Croot, tj.first - h1 + 1, string(tj.second), cntTag);
+                now->ch.back()->elem[0] = "tag" + QString::number(++cntTag);
+                insert(now->ch.back(), tj.second);
+                Cins(Croot, tj.first - h1 + 1, tj.second, cntTag);
             }
 
             // 如果是无序列表
@@ -455,7 +466,7 @@ public:
                     now->ch.push_back(new node(paragraph));
                     now = now->ch.back();
                 }
-                insert(now, string(tj.second));
+                insert(now, tj.second);
             }
 
             // 如果是有序列表
@@ -479,7 +490,7 @@ public:
                     now->ch.push_back(new node(paragraph));
                     now = now->ch.back();
                 }
-                insert(now, string(tj.second));
+                insert(now, tj.second);
             }
 
             // 如果是引用
@@ -489,7 +500,7 @@ public:
                 }
                 now = now->ch.back();
                 if (newpara || now->ch.empty()) now->ch.push_back(new node(paragraph));
-                insert(now->ch.back(), string(tj.second));
+                insert(now->ch.back(), tj.second);
             }
 
             newpara = false;
@@ -497,7 +508,7 @@ public:
         }
 
         // 文件读取分析完毕
-        fin.close();
+//        fin.close();
 
         // 深入优先遍历整个语法树
         dfs(root);
@@ -505,14 +516,14 @@ public:
         // 构造目录
         TOC += "<ul>";
         for (int i = 0; i < (int)Croot->ch.size(); i++)
-            Cdfs(Croot->ch[i], to_string(i + 1) + ".");
+            Cdfs(Croot->ch[i], QString::number(i + 1) + ".");
         TOC += "</ul>";
     }
 
     // 获得 Markdown 目录
-    string getTableOfContents() { return TOC; }
+    QString getTableOfContents() { return TOC; }
     // 获得 Markdown 内容
-    string getContents() { return content; }
+    QString getContents() { return content; }
 
     // 析构函数
     ~MarkdownTransform() {
