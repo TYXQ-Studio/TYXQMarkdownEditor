@@ -39,18 +39,19 @@ gantt
     中期答辩      									   :done, a2, 2022-12-10, 1d
     最终答辩      									   :done, a3, 2022-12-16, 1d
     section 客户端
-    CMake                                              :cmake, 2022-12-03, 2022-12-06
-    引入FramelessHelper库                              :frameless, 2022-12-04, 2022-12-06
-    基本 Markdown 编辑 以及 实时渲染                   :basic, 2022-12-05, 3d
-    链接可视化                                         :visual_link, after basic, 6d
-    pdf导出                                            :after basic, 1d
-    图片、视频、音频预览                               :after basic, 4d
-    代码块增强                                         :after render, 3d
-    主题                                               :after basic, 6d
-    设置                                               :after basic, 6d
-    多人协作                                           :after render, 6d
+    CMake                                              :done, cmake, 2022-12-03, 2022-12-06
+    引入FramelessHelper库                              :done, frameless, 2022-12-04, 2022-12-06
+    基本 Markdown 编辑 以及 实时渲染                   :done, basic, 2022-12-05, 3d
+    Markdown编辑高亮                                   :done, 2022-12-08, 1d
+    链接可视化                                         :2022-12-09, 6d
+    pdf导出                                            :2022-12-09, 1d
+    图片、视频、音频预览                               :2022-12-09, 4d
+    代码块增强                                         :2022-12-09, 3d
+    主题                                               :2022-12-09, 6d
+    设置                                               :2022-12-09, 6d
+    多人协作                                           :2022-12-09, 6d
     section 服务端
-    服务端                                             :after render, 6d
+    服务端                                             :2022-12-09, 6d
     section 功能类
 ```
 
@@ -66,6 +67,8 @@ gantt
 - **<font color="red">Markdown编辑</font>**
   - **<font color="red">实时预览</font>**
 
+    Markdown词法分析
+  
   - 导出pdf
 
 #### 2> 拓展功能

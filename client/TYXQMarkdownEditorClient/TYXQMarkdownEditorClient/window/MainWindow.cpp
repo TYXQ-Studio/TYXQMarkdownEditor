@@ -8,13 +8,15 @@
 #include <QFileDialog>
 #include "../settings.h"
 #include <iostream>
-#include <QWebEngineView>
+//#include <QWebEngineView>
 #include <QPlainTextEdit>
-#include "PreviewPage.h"
-#include <QWebChannel>
+//#include "PreviewPage.h"
+//#include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
+#include "../utils/mdtransform.hpp"
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -119,25 +121,39 @@ void MainWindow::initFramelessWindow() {
     setWindowIcon(QFileIconProvider().icon(QFileIconProvider::Computer));
 }
 
+QString headHtml = "<!DOCTYPE html><html><head>"
+        "<meta charset=\"utf-8\">"
+        "<title>Markdown</title>"
+        "<link rel=\"stylesheet\" href=\"github-markdown.css\">"
+        "</head><body><article class=\"markdown-body\">";
+
+QString endHtml = "</article></body></html>";
+
+
 void MainWindow::initView() {
     splitter = new QSplitter(this);
     setCentralWidget(splitter);
 
     editor = new QMarkdownTextEdit();
-    preview = new QWebEngineView();
-    PreviewPage *page = new PreviewPage();
-    preview->setPage(page);
     splitter->addWidget(editor);
+    preview = new QTextBrowser();
+    preview->setOpenExternalLinks(true);
     splitter->addWidget(preview);
 
-    connect(editor, &QMarkdownTextEdit::textChanged,
-            [=]() { m_content.setText(editor->toPlainText()); });
+    connect(editor, &QMarkdownTextEdit::textChanged,this, [=]() {
+        m_content.setText(editor->toPlainText());
+        qDebug() << "Editor:" << editor->toPlainText();
+        auto transform = MarkdownTransform::fromStr(editor->toPlainText());
+        qDebug() << "TOC:" << transform.getTableOfContents();
+        qDebug() << "Contents:" << transform.getContents();
+        preview->setHtml(headHtml + transform.getTableOfContents() + transform.getContents() + endHtml);
+    });
 
-    QWebChannel *channel = new QWebChannel(this);
-    channel->registerObject(QStringLiteral("content"), &m_content);
-    page->setWebChannel(channel);
+//    QWebChannel *channel = new QWebChannel(this);
+//    channel->registerObject(QStringLiteral("content"), &m_content);
+//    page->setWebChannel(channel);
 
-    preview->setUrl(QUrl("qrc:/index.html"));
+//    preview->setUrl(QUrl("qrc:/index.html"));
 
     connect(actionNew, &QAction::triggered, this, &MainWindow::onFileNew);
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
@@ -249,19 +265,6 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     FramelessMainWindow::closeEvent(e);
 }
 
-//void MainWindow::onOpenDir() {
-//    QString dir = QFileDialog::getExistingDirectory(this, " Open directory ", "./",
-//                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-//    if (dir == nullptr) return;
-////    std::cout << dir.toStdString() << std::endl;
-//    fileTreeModel->setRootPath(dir);
-//    fileTreeView->setRootIndex(fileTreeModel->index(dir));
-//}
-
-void MainWindow::onLoadFile() {
-    // TODO: 这里写读取文件相关处理
-}
-
 
 void MainWindow::openFile(const QString &path) {
     QFile f(path);
@@ -276,7 +279,6 @@ void MainWindow::openFile(const QString &path) {
     statusBar()->showMessage(tr("Opened %1").arg(QDir::toNativeSeparators(path)));
 }
 
-bool MainWindow::isModified() const
-{
+bool MainWindow::isModified() const {
     return editor->document()->isModified();
 }

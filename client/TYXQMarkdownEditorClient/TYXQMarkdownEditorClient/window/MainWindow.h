@@ -5,9 +5,10 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QSplitter>
-#include "Document.h"
+#include "MarkdownDocument.h"
 #include <QPlainTextEdit>
-#include <QWebEngineView>
+//#include <QWebEngineView>
+#include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 
 FRAMELESSHELPER_BEGIN_NAMESPACE
@@ -37,16 +38,16 @@ private:
     QScopedPointer<FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar)> m_titleBar;
 //    QScopedPointer<Ui::MainWindow> m_mainWindow;
 
-    QString curFile;
-    QString curDir;
+//    QString curFile;
+//    QString curDir;
 
     QMarkdownTextEdit *editor;
-    QWebEngineView *preview;
+    QTextBrowser *preview;
     QString m_filePath;
-    Document m_content;
+    MarkdownDocument m_content;
 
-    QFileSystemModel *fileTreeModel;
-    QTreeView *fileTreeView;
+//    QFileSystemModel *fileTreeModel;
+//    QTreeView *fileTreeView;
 
     QSplitter *splitter;
 
@@ -55,7 +56,7 @@ private:
     QMenu *fileMenu;
     QAction *actionNew;
     QAction *actionOpen;
-    QAction *openDirAct;
+//    QAction *openDirAct;
     QAction *actionSave;
     QAction *actionSaveAs;
 
@@ -63,17 +64,11 @@ private:
     void onFileNew();
     void onFileOpen();
     void onFileSave();
-//    void onOpenDir();
-    void onLoadFile();
-
-    void initTitleBar();
-
-    void initMenu();
-
-    void initFramelessWindow();
-
     void onFileSaveAs();
 
+    void initTitleBar();
+    void initMenu();
+    void initFramelessWindow();
     void initView();
 };
 

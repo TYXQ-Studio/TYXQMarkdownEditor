@@ -1,6 +1,6 @@
-#include "Document.h"
+#include "MarkdownDocument.h"
 
-void Document::setText(const QString &text)
+void MarkdownDocument::setText(const QString &text)
 {
     if (text == m_text)
         return;
