@@ -236,11 +236,11 @@ private:
 
         // 如果出现 * + -, 并且他们的下一个字符为空格，则说明是列表
         if (src.startsWith("- "))
-            return make_pair(ul, src.right(src.size() - 2));
+            return make_pair(ul, src.right(src.size() - i));
 
         // 如果出现 > 且下一个字符为空格，则说明是引用
         if (src.startsWith("> "))
-            return make_pair(quote, src.right(src.size() - 2));
+            return make_pair(quote, src.right(src.size() - i));
 
         // 如果出现的是数字, 且下一个字符是 . 则说明是是有序列表
         int j = i;

@@ -14,6 +14,7 @@
 #include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 #include "../utils/mdtransform.hpp"
 
@@ -138,8 +139,7 @@ void MainWindow::initView() {
 //    PreviewPage *page = new PreviewPage();
 //    preview->setPage(page);
     splitter->addWidget(editor);
-    QTextEdit *te = new QTextEdit();
-    te->setReadOnly(true);
+    QTextBrowser  *te = new QTextBrowser();
     splitter->addWidget(te);
 //    splitter->addWidget(preview);
 
