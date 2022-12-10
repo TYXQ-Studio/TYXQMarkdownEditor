@@ -133,3 +133,8 @@ gantt
 - [quickly/quickly: ES6 and Node.js-like environment for QML (github.com)](https://github.com/quickly/quickly)
 
 - [trollixx/node.qml: A port of Node.js to QML (github.com)](https://github.com/trollixx/node.qml)
+
+
+
+- [Markdown 解析原理详解和 Markdown AST 描述 - D 的个人博客 (b3log.org)](https://88250.b3log.org/articles/2020/04/23/1587637426085.html)
+- [C++ 打造 Markdown 解析器_牛客博客 (nowcoder.net)](https://blog.nowcoder.net/n/1e0817a420b94d118c01c60be195f1cc)

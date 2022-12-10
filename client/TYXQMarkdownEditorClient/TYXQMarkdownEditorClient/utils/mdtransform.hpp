@@ -9,66 +9,68 @@
 #include <string>
 #include <cctype>
 #include <cstdio>
+
 using namespace std;
 
 #define MAX_LEN 10000
 
 // 词法关键字枚举
-enum{
-    nul             = 0,
-    paragraph       = 1,
-    href            = 2,
-    ul              = 3,
-    ol              = 4,
-    li              = 5,
-    em              = 6,
-    strong          = 7,
-    hr              = 8,
-    br              = 9,
-    image           = 10,
-    quote           = 11,
-    h1              = 12,
-    h2              = 13,
-    h3              = 14,
-    h4              = 15,
-    h5              = 16,
-    h6              = 17,
-    blockcode       = 18,
-    code            = 19
+enum {
+    nul = 0,
+    paragraph = 1,
+    href = 2,
+    ul = 3,
+    ol = 4,
+    li = 5,
+    em = 6,
+    strong = 7,
+    hr = 8,
+    br = 9,
+    image = 10,
+    quote = 11,
+    h1 = 12,
+    h2 = 13,
+    h3 = 14,
+    h4 = 15,
+    h5 = 16,
+    h6 = 17,
+    blockcode = 18,
+    code = 19
 };
 // HTML 前置标签
 const QString frontTag[] = {
-    "","<p>","","<ul>","<ol>","<li>","<em>","<strong>",
-    "<hr color=#CCCCCC size=1 />","<br />",
-    "","<blockquote>",
-    "<h1 ","<h2 ","<h3 ","<h4 ","<h5 ","<h6 ", // 右边的尖括号预留给添加其他的标签属性
-    "<pre><code>","<code>"
+        "", "<p>", "", "<ul>", "<ol>", "<li>", "<em>", "<strong>",
+        "<hr color=#CCCCCC size=1 />", "<br />",
+        "", "<blockquote>",
+        "<h1 ", "<h2 ", "<h3 ", "<h4 ", "<h5 ", "<h6 ", // 右边的尖括号预留给添加其他的标签属性
+        "<pre><code>", "<code>"
 };
 // HTML 后置标签
 const QString backTag[] = {
-    "","</p>","","</ul>","</ol>","</li>","</em>","</strong>",
-    "","","","</blockquote>",
-    "</h1>","</h2>","</h3>","</h4>","</h5>","</h6>",
-    "</code></pre>","</code>"
+        "", "</p>", "", "</ul>", "</ol>", "</li>", "</em>", "</strong>",
+        "", "", "", "</blockquote>",
+        "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>",
+        "</code></pre>", "</code>"
 };
 typedef struct Cnode {
-    vector <Cnode *> ch;
+    vector<Cnode *> ch;
     QString heading;
     QString tag;
-    Cnode (const QString &hd): heading(hd) {}
+
+    Cnode(const QString &hd) : heading(hd) {}
 } Cnode;
 
 typedef struct node {
     int type;                           // 节点代表的类型
-    vector <node *> ch;
+    vector<node *> ch;
     QString elem[3];                     // 用来存放三个重要的属性, elem[0] 保存了要显示的内容
-                                        // elem[1] 保存了链接, elem[2] 则保存了 title
-    node (int _type): type(_type) {}
+    // elem[1] 保存了链接, elem[2] 则保存了 title
+    node(int _type) : type(_type) {}
 } node;
 
-class MarkdownTransform{
+class MarkdownTransform {
 private:
-    node  *root, *now;
+    node *root, *now;
     Cnode *Croot;
     QString content, TOC;
     int cntTag = 0;
@@ -79,18 +81,21 @@ private:
     inline bool isHeading(node *v) {
         return (v->type >= h1 && v->type <= h6);
     }
+
     // 判断是否为图片
     inline bool isImage(node *v) {
         return (v->type == image);
     }
+
     // 判断是否为超链接
     inline bool isHref(node *v) {
         return (v->type == href);
     }
+
     // 递归销毁数节点
-    template <typename T>
+    template<typename T>
     void destroy(T *v) {
-        for (int i = 0; i < (int)v->ch.size(); i++) {
+        for (int i = 0; i < (int) v->ch.size(); i++) {
             destroy(v->ch[i]);
         }
         delete v;
@@ -99,7 +104,7 @@ private:
     void Cdfs(Cnode *v, QString index) {
         TOC += "<li>\n";
         TOC += "<a href=\"#" + v->tag + "\">" + index + " " + v->heading + "</a>\n";
-        int n = (int)v->ch.size();
+        int n = (int) v->ch.size();
         if (n) {
             TOC += "<ul>\n";
             for (int i = 0; i < n; i++) {
@@ -111,11 +116,11 @@ private:
     }
 
     void Cins(Cnode *v, int x, const QString &hd, int tag) {
-        int n = (int)v->ch.size();
+        int n = (int) v->ch.size();
         if (x == 1) {
             v->ch.push_back(new Cnode(hd));
             v->ch.back()->tag = "tag" + QString::number(tag);
-            return ;
+            return;
         }
 
         if (!n || v->ch.back()->heading.isEmpty())
@@ -125,7 +130,7 @@ private:
 
     void dfs(node *v) {
         if (v->type == paragraph && v->elem[0].isEmpty() && v->ch.empty())
-            return ;
+            return;
 
         content += frontTag[v->type];
         bool flag = true;
@@ -155,7 +160,7 @@ private:
         }
 
         // 递归遍历所有
-        for (int i = 0; i < (int)v->ch.size(); i++)
+        for (int i = 0; i < (int) v->ch.size(); i++)
             dfs(v->ch[i]);
 
         // 拼接为结束标签
@@ -181,10 +186,10 @@ private:
         if (v->ch.size() == 1u && v->ch.back()->type == paragraph)
             return;
         if (v->type == paragraph)
-            return ;
+            return;
         if (v->type == nul) {
             v->type = paragraph;
-            return ;
+            return;
         }
         node *x = new node(paragraph);
         x->ch = v->ch;
@@ -245,7 +250,7 @@ private:
         // 如果出现的是数字, 且下一个字符是 . 则说明是是有序列表
         int j = i;
         while (j < src.size() && src[j].isDigit()) j++;
-        if (j != i && j+1 < src.size() && src[j] == '.' && src[j+1] == ' ')
+        if (j != i && j + 1 < src.size() && src[j] == '.' && src[j + 1] == ' ')
             return make_pair(ol, src.right(src.size() - j));
 
         // 否则，就是普通段落
@@ -255,7 +260,7 @@ private:
     // 给定树的深度寻找节点
     // depth: 树的深度
     // 返回值: 找到的节点指针
-    inline node* findnode(int depth) {
+    inline node *findnode(int depth) {
         node *ptr = root;
         while (!ptr->ch.empty() && depth != 0) {
             ptr = ptr->ch.back();
@@ -269,11 +274,11 @@ private:
     // v: 节点
     // src: 要处理的串
     void insert(node *v, const QString &src) {
-        int n = (int)src.size();
+        int n = (int) src.size();
         bool incode = false,
-             inem = false,
-             instrong = false,
-             inautolink = false;
+                inem = false,
+                instrong = false,
+                inautolink = false;
         v->ch.push_back(new node(nul));
 
         for (int i = 0; i < n; i++) {
@@ -306,7 +311,7 @@ private:
 
             // 处理图片
             if (ch == '!' && (i < n - 1 && src[i + 1] == '[')
-               && !incode && !instrong && !inem && !inautolink) {
+                && !incode && !instrong && !inem && !inautolink) {
                 v->ch.push_back(new node(image));
                 for (i += 2; i < n - 1 && src[i] != ']'; i++)
                     v->ch.back()->elem[0] += src[i];
@@ -353,6 +358,7 @@ public:
         QTextStream textStream(&file);
         return {textStream};
     }
+
     static MarkdownTransform fromStr(QString content) {
         QTextStream textStream(&content);
         return {textStream};
@@ -416,7 +422,7 @@ public:
                 }
                 bool flag = false;
                 if (newpara && !now->ch.empty()) {
-                    node* ptr = nullptr;
+                    node *ptr = nullptr;
                     for (auto i: now->ch) {
                         if (i->type == nul)
                             ptr = i;
@@ -453,7 +459,7 @@ public:
                 now = now->ch.back();
                 bool flag = false;
                 if (newpara && !now->ch.empty()) {
-                    node* ptr = nullptr;
+                    node *ptr = nullptr;
                     for (auto i: now->ch) {
                         if (i->type == li) ptr = i;
                     }
@@ -477,7 +483,7 @@ public:
                 now = now->ch.back();
                 bool flag = false;
                 if (newpara && !now->ch.empty()) {
-                    node* ptr = nullptr;
+                    node *ptr = nullptr;
                     for (auto i: now->ch) {
                         if (i->type == li) ptr = i;
                     }
@@ -515,13 +521,14 @@ public:
 
         // 构造目录
         TOC += "<ul>";
-        for (int i = 0; i < (int)Croot->ch.size(); i++)
+        for (int i = 0; i < (int) Croot->ch.size(); i++)
             Cdfs(Croot->ch[i], QString::number(i + 1) + ".");
         TOC += "</ul>";
     }
 
     // 获得 Markdown 目录
     QString getTableOfContents() { return TOC; }
+
     // 获得 Markdown 内容
     QString getContents() { return content; }
 
@@ -531,4 +538,5 @@ public:
         destroy<Cnode>(Croot);
     }
 };
+
 #endif
