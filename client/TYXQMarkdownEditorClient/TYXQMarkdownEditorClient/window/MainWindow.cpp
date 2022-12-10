@@ -143,12 +143,6 @@ void MainWindow::initView() {
     splitter->addWidget(editor);
     splitter->addWidget(preview);
 
-//    connect(editor, &QMarkdownTextEdit::cursorPositionChanged, this, [=](const QTextCursor &cursor) {
-//         qDebug() << "position:" << cursor.position();
-//         qDebug() << "anchor:" << cursor.anchor();
-//         qDebug() << "columnNumber:" << cursor.columnNumber();
-//         qDebug() << "blockNumber:" << cursor.blockNumber();
-//    });
     connect(editor->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=]() {
         preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
                                                editor->verticalScrollBar()->maximum() *
@@ -180,14 +174,7 @@ void MainWindow::initView() {
         preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
                                                editor->verticalScrollBar()->maximum() *
                                                preview->verticalScrollBar()->maximum());
-//        preview->setMarkdown(editor->toPlainText());
     });
-
-//    QWebChannel *channel = new QWebChannel(this);
-//    channel->registerObject(QStringLiteral("content"), &m_content);
-//    page->setWebChannel(channel);
-
-//    preview->setUrl(QUrl("qrc:/index.html"));
 
     connect(actionNew, &QAction::triggered, this, &MainWindow::onFileNew);
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
