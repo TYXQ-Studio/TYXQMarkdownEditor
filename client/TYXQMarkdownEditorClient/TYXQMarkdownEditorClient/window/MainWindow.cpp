@@ -8,15 +8,13 @@
 #include <QFileDialog>
 #include "../settings.h"
 #include <iostream>
-//#include <QWebEngineView>
 #include <QPlainTextEdit>
-//#include "PreviewPage.h"
-//#include <QWebChannel>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QTextBrowser>
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 #include "../utils/mdtransform.hpp"
+#include <QScrollBar>
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -121,10 +119,13 @@ void MainWindow::initFramelessWindow() {
     setWindowIcon(QFileIconProvider().icon(QFileIconProvider::Computer));
 }
 
+QString styleHtml = "<style>pre code.hljs{display:block;overflow-x:auto;padding:1em}code.hljs{padding:3px 5px}.hljs{background:#f3f3f3;color:#444}.hljs-comment{color:#697070}.hljs-punctuation,.hljs-tag{color:#444a}.hljs-tag .hljs-attr,.hljs-tag .hljs-name{color:#444}.hljs-attribute,.hljs-doctag,.hljs-keyword,.hljs-meta .hljs-keyword,.hljs-name,.hljs-selector-tag{font-weight:700}.hljs-deletion,.hljs-number,.hljs-quote,.hljs-selector-class,.hljs-selector-id,.hljs-string,.hljs-template-tag,.hljs-type{color:#800}.hljs-section,.hljs-title{color:#800;font-weight:700}.hljs-link,.hljs-operator,.hljs-regexp,.hljs-selector-attr,.hljs-selector-pseudo,.hljs-symbol,.hljs-template-variable,.hljs-variable{color:#ab5656}.hljs-literal{color:#695}.hljs-addition,.hljs-built_in,.hljs-bullet,.hljs-code{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta .hljs-string{color:#38a}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:700}</style>";
+
 QString headHtml = "<!DOCTYPE html><html><head>"
         "<meta charset=\"utf-8\">"
         "<title>Markdown</title>"
-        "<link rel=\"stylesheet\" href=\"github-markdown.css\">"
+        + styleHtml +
+        "<link rel=\"stylesheet\" href=\":/3rdparty/default.min.css\">"
         "</head><body><article class=\"markdown-body\">";
 
 QString endHtml = "</article></body></html>";
@@ -135,10 +136,39 @@ void MainWindow::initView() {
     setCentralWidget(splitter);
 
     editor = new QMarkdownTextEdit();
-    splitter->addWidget(editor);
+    editor->setFocusPolicy(Qt::WheelFocus);
     preview = new QTextBrowser();
     preview->setOpenExternalLinks(true);
+    preview->setFocusPolicy(Qt::WheelFocus);
+    splitter->addWidget(editor);
     splitter->addWidget(preview);
+
+//    connect(editor, &QMarkdownTextEdit::cursorPositionChanged, this, [=](const QTextCursor &cursor) {
+//         qDebug() << "position:" << cursor.position();
+//         qDebug() << "anchor:" << cursor.anchor();
+//         qDebug() << "columnNumber:" << cursor.columnNumber();
+//         qDebug() << "blockNumber:" << cursor.blockNumber();
+//    });
+    connect(editor->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=]() {
+        preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
+                                               editor->verticalScrollBar()->maximum() *
+                                               preview->verticalScrollBar()->maximum());
+        qDebug() << "editor: rangeChanged";
+    });
+    connect(editor->verticalScrollBar(), &QScrollBar::valueChanged, this, [=]() {
+        if (preview->hasFocus()) return;
+        preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
+                                               editor->verticalScrollBar()->maximum() *
+                                               preview->verticalScrollBar()->maximum());
+        qDebug() << "editor: valueChanged when preview has no focus";
+    });
+    connect(preview->verticalScrollBar(), &QScrollBar::valueChanged, this, [=]() {
+        if (editor->hasFocus()) return;
+        editor->verticalScrollBar()->setValue(1.0 * preview->verticalScrollBar()->value() /
+                                              preview->verticalScrollBar()->maximum() *
+                                              editor->verticalScrollBar()->maximum());
+        qDebug() << "preview: valueChanged when editor has no focus";
+    });
 
     connect(editor, &QMarkdownTextEdit::textChanged,this, [=]() {
         m_content.setText(editor->toPlainText());
@@ -147,6 +177,10 @@ void MainWindow::initView() {
         qDebug() << "TOC:" << transform.getTableOfContents();
         qDebug() << "Contents:" << transform.getContents();
         preview->setHtml(headHtml + transform.getTableOfContents() + transform.getContents() + endHtml);
+        preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
+                                               editor->verticalScrollBar()->maximum() *
+                                               preview->verticalScrollBar()->maximum());
+//        preview->setMarkdown(editor->toPlainText());
     });
 
 //    QWebChannel *channel = new QWebChannel(this);
