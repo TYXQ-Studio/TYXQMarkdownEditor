@@ -246,11 +246,6 @@ void MainWindow::onFileOpen() {
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     if (dialog.exec() == QDialog::Accepted)
         openFile(dialog.selectedFiles().constFirst());
-
-//    QString filepath = QFileDialog::getOpenFileName(this, " Open file ", "./", ".md");
-//    if (filepath == nullptr) return;
-//    curFile = filepath;
-//    onLoadFile();
 }
 
 void MainWindow::onFileSave() {
