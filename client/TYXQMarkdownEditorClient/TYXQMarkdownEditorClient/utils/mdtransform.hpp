@@ -369,13 +369,10 @@ public:
         root = new node(nul);
         now = root;
 
-//        std::ifstream fin(filename);
-
         bool newpara = false;
         bool inblock = false;
         while (textStream.readLineInto(&line)) {
-            // 从文件中获取一行
-//            fin.getline(s, MAX_LEN);
+            // 处理每一行
 
             // 处理不在代码块且需要换行的情况
             if (!inblock && isCutline(line)) {

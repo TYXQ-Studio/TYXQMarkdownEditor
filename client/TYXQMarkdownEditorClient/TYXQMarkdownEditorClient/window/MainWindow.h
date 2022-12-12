@@ -36,27 +36,24 @@ private:
     bool isModified() const;
 
     QScopedPointer<FRAMELESSHELPER_PREPEND_NAMESPACE(StandardTitleBar)> m_titleBar;
-//    QScopedPointer<Ui::MainWindow> m_mainWindow;
-
-//    QString curFile;
-//    QString curDir;
 
     QMarkdownTextEdit *editor;
     QTextBrowser *preview;
     QString m_filePath;
     MarkdownDocument m_content;
 
-//    QFileSystemModel *fileTreeModel;
-//    QTreeView *fileTreeView;
+    QFileSystemModel *fileTreeModel;
+    QTreeView *fileTreeView;
 
     QSplitter *splitter;
+    QSplitter *contentSplitter;
 
     // Menu things
     QMenuBar *m_menuBar;
     QMenu *fileMenu;
     QAction *actionNew;
     QAction *actionOpen;
-//    QAction *openDirAct;
+    QAction *actionOpenDir;
     QAction *actionSave;
     QAction *actionSaveAs;
 
@@ -70,6 +67,8 @@ private:
     void initMenu();
     void initFramelessWindow();
     void initView();
+
+    void onDirOpen();
 };
 
 
