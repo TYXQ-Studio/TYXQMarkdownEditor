@@ -147,6 +147,11 @@ void MainWindow::initView() {
     fileTreeView->setColumnHidden(1, true);
     fileTreeView->setColumnHidden(2, true);
     fileTreeView->setColumnHidden(3, true);
+    connect(fileTreeView, &QTreeView::doubleClicked, this, [=](const QModelIndex &index) {
+        if (fileTreeModel->type(index) == "File Folder") return;
+//        qDebug() << fileTreeModel->filePath(index);
+        openFile(fileTreeModel->filePath(index));
+    });
 
     editor = new QMarkdownTextEdit();
     editor->setFocusPolicy(Qt::WheelFocus);
@@ -197,13 +202,7 @@ void MainWindow::initView() {
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
     connect(actionSave, &QAction::triggered, this, &MainWindow::onFileSave);
     connect(actionSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
-    connect(actionOpenDir, &QAction::triggered, this, [=]() {
-        QString dir = QFileDialog::getExistingDirectory(this, " 打开目录 ", "./",
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-        if (dir == nullptr) return;
-       fileTreeModel->setRootPath(dir);
-       fileTreeView->setRootIndex(fileTreeModel->index(dir));
-    });
+    connect(actionOpenDir, &QAction::triggered, this, &MainWindow::onDirOpen );
 //    connect(actionExit, &QAction::triggered, this, &QWidget::close);
 
     connect(editor->document(), &QTextDocument::modificationChanged,
@@ -257,6 +256,14 @@ void MainWindow::onFileOpen() {
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     if (dialog.exec() == QDialog::Accepted)
         openFile(dialog.selectedFiles().constFirst());
+}
+
+void MainWindow::onDirOpen() {
+    QString dir = QFileDialog::getExistingDirectory(this, " 打开目录 ", "./",
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if (dir == nullptr) return;
+    fileTreeModel->setRootPath(dir);
+    fileTreeView->setRootIndex(fileTreeModel->index(dir));
 }
 
 void MainWindow::onFileSave() {

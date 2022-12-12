@@ -67,6 +67,8 @@ private:
     void initMenu();
     void initFramelessWindow();
     void initView();
+
+    void onDirOpen();
 };
 
 
