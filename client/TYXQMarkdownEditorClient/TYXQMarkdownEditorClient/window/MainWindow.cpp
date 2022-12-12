@@ -15,6 +15,7 @@
 #include "../../qmarkdowntextedit/qmarkdowntextedit.h"
 #include "../utils/mdtransform.hpp"
 #include <QScrollBar>
+#include <QHeaderView>
 
 FRAMELESSHELPER_USE_NAMESPACE
 using namespace Global;
@@ -76,9 +77,9 @@ QMenuBar::item:pressed {
     fileMenu->addAction(actionOpen);
     // File -> Open Directory
     // TODO: Open Directory
-//    openDirAct = new QAction(tr("&Open Directory"), this);
-//    openDirAct->setStatusTip(tr("Open a directory"));
-//    fileMenu->addAction(openDirAct);
+    actionOpenDir = new QAction(tr("&Open Directory"), this);
+    actionOpenDir->setStatusTip(tr("Open a directory"));
+    fileMenu->addAction(actionOpenDir);
     // File -> Save
     actionSave = new QAction(tr("&Save"), this);
     actionSave->setShortcuts(QKeySequence::Save);
@@ -91,8 +92,7 @@ QMenuBar::item:pressed {
     fileMenu->addAction(actionSaveAs);
 
 //    connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
-//    connect(openDirAct, &QAction::triggered, this, &MainWindow::onOpenDir);
-
+//    connect(actionOpenDir, &QAction::triggered, this, &MainWindow::onOpenDir);
 }
 
 void MainWindow::initFramelessWindow() {
@@ -135,13 +135,30 @@ void MainWindow::initView() {
     splitter = new QSplitter(this);
     setCentralWidget(splitter);
 
+    fileTreeModel = new QFileSystemModel();
+//    fileTreeModel->setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
+    fileTreeModel->setNameFilters(QStringList() << "*.md");
+    fileTreeModel->setNameFilterDisables(false);
+    fileTreeModel->setRootPath(QDir::currentPath());
+    fileTreeView = new QTreeView();
+    fileTreeView->setModel(fileTreeModel);
+    fileTreeView->setRootIndex(fileTreeModel->index(QDir::currentPath()));
+    fileTreeView->header()->setVisible(false);
+    fileTreeView->setColumnHidden(1, true);
+    fileTreeView->setColumnHidden(2, true);
+    fileTreeView->setColumnHidden(3, true);
+
     editor = new QMarkdownTextEdit();
     editor->setFocusPolicy(Qt::WheelFocus);
     preview = new QTextBrowser();
     preview->setOpenExternalLinks(true);
     preview->setFocusPolicy(Qt::WheelFocus);
+    splitter->addWidget(fileTreeView);
     splitter->addWidget(editor);
     splitter->addWidget(preview);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 2);
+    splitter->setStretchFactor(2, 2);
 
     connect(editor->verticalScrollBar(), &QScrollBar::rangeChanged, this, [=]() {
         preview->verticalScrollBar()->setValue(1.0 * editor->verticalScrollBar()->value() /
@@ -180,6 +197,13 @@ void MainWindow::initView() {
     connect(actionOpen, &QAction::triggered, this, &MainWindow::onFileOpen);
     connect(actionSave, &QAction::triggered, this, &MainWindow::onFileSave);
     connect(actionSaveAs, &QAction::triggered, this, &MainWindow::onFileSaveAs);
+    connect(actionOpenDir, &QAction::triggered, this, [=]() {
+        QString dir = QFileDialog::getExistingDirectory(this, " 打开目录 ", "./",
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if (dir == nullptr) return;
+       fileTreeModel->setRootPath(dir);
+       fileTreeView->setRootIndex(fileTreeModel->index(dir));
+    });
 //    connect(actionExit, &QAction::triggered, this, &QWidget::close);
 
     connect(editor->document(), &QTextDocument::modificationChanged,
