@@ -1,18 +1,12 @@
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PROJECT_SOURCES
-        window/MarkdownDocument.cpp
-        window/MarkdownDocument.h
+        utils/Document.cpp
+        utils/Document.h
         main.cpp
         settings.h
         settings.cpp
-#        window/highlighter.h
-#        window/highlighter.cpp
-#        window/Home.h
-#        window/Home.cpp
         window/MainWindow.h
         window/MainWindow.cpp
-#        window/PreviewPage.h
-#        window/PreviewPage.cpp
         utils/mdtransform.hpp)
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Gui Widgets #[[WebChannel WebEngineWidgets]])
