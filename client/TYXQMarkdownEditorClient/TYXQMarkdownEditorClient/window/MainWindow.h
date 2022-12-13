@@ -44,6 +44,7 @@ private:
 
     QFileSystemModel *fileTreeModel;
     QTreeView *fileTreeView;
+    QString curDir;
 
     QSplitter *splitter;
     QSplitter *contentSplitter;
