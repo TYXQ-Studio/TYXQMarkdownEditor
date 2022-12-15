@@ -5,7 +5,7 @@
 #include <QFileSystemModel>
 #include <QTreeView>
 #include <QSplitter>
-#include "MarkdownDocument.h"
+#include "utils/Document.h"
 #include <QPlainTextEdit>
 //#include <QWebEngineView>
 #include <QTextBrowser>
@@ -40,10 +40,11 @@ private:
     QMarkdownTextEdit *editor;
     QTextBrowser *preview;
     QString m_filePath;
-    MarkdownDocument m_content;
+    Document m_content;
 
     QFileSystemModel *fileTreeModel;
     QTreeView *fileTreeView;
+    QString curDir;
 
     QSplitter *splitter;
     QSplitter *contentSplitter;

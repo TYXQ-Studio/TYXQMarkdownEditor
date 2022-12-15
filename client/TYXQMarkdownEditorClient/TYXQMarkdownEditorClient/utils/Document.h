@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QString>
 
-class MarkdownDocument : public QObject
+class Document : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
 public:
-    explicit MarkdownDocument(QObject *parent = nullptr) : QObject(parent) {}
+    explicit Document(QObject *parent = nullptr) : QObject(parent) {}
 
     void setText(const QString &text);
 

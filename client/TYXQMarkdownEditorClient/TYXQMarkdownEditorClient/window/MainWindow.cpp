@@ -22,6 +22,7 @@ using namespace Global;
 
 FRAMELESSHELPER_STRING_CONSTANT(Geometry)
 FRAMELESSHELPER_STRING_CONSTANT(State)
+FRAMELESSHELPER_STRING_CONSTANT(CurDir)
 
 MainWindow::MainWindow(QWidget *parent, const Qt::WindowFlags flags) : FramelessMainWindow(parent, flags) {
     initialize();
@@ -105,6 +106,7 @@ void MainWindow::initFramelessWindow() {
     connect(helper, &FramelessWidgetsHelper::ready, this, [this, helper]() {
         const QByteArray geoData = Settings::get({}, kGeometry);
         const QByteArray stateData = Settings::get({}, kState);
+        QByteArray curDirData = Settings::get({}, kCurDir);
         if (geoData.isEmpty()) {
             helper->moveWindowToDesktopCenter();
         } else {
@@ -113,6 +115,16 @@ void MainWindow::initFramelessWindow() {
         if (!stateData.isEmpty()) {
             restoreState(stateData);
         }
+        if (curDirData.isEmpty()) {
+            curDir =  QDir::currentPath();
+            qDebug() << curDir;
+        } else {
+            QDataStream s(&curDirData, QIODevice::ReadWrite);
+            s >> curDir;
+            qDebug() << curDir;
+        }
+
+        initView();
     });
 
     setWindowTitle(tr("TYXQMarkdownEditor"));
@@ -139,10 +151,10 @@ void MainWindow::initView() {
 //    fileTreeModel->setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
     fileTreeModel->setNameFilters(QStringList() << "*.md");
     fileTreeModel->setNameFilterDisables(false);
-    fileTreeModel->setRootPath(QDir::currentPath());
+    fileTreeModel->setRootPath(curDir);
     fileTreeView = new QTreeView();
     fileTreeView->setModel(fileTreeModel);
-    fileTreeView->setRootIndex(fileTreeModel->index(QDir::currentPath()));
+    fileTreeView->setRootIndex(fileTreeModel->index(curDir));
     fileTreeView->header()->setVisible(false);
     fileTreeView->setColumnHidden(1, true);
     fileTreeView->setColumnHidden(2, true);
@@ -213,7 +225,7 @@ void MainWindow::initialize() {
     initTitleBar();
     initFramelessWindow();
 
-    initView();
+//    initView();
 
     /*
 //    QFile defaultTextFile(":/default.md");
@@ -262,6 +274,7 @@ void MainWindow::onDirOpen() {
     QString dir = QFileDialog::getExistingDirectory(this, " 打开目录 ", "./",
                                                     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dir == nullptr) return;
+    curDir = dir;
     fileTreeModel->setRootPath(dir);
     fileTreeView->setRootIndex(fileTreeModel->index(dir));
 }
@@ -309,6 +322,12 @@ void MainWindow::closeEvent(QCloseEvent *e) {
     }
     Settings::set({}, kGeometry, saveGeometry());
     Settings::set({}, kState, saveState());
+
+    QByteArray bytes;
+    QDataStream s(&bytes, QIODevice::ReadWrite);
+    s << curDir;
+    Settings::set({}, kCurDir, bytes);
+
     FramelessMainWindow::closeEvent(e);
 }
 
